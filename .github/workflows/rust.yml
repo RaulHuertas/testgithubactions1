@@ -12,8 +12,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
     - uses: actions/checkout@v4
     - name: Build
       run: cargo build --verbose
     - name: Run tests
       run: cargo test --verbose
+
+#    - name: Archive (${{ env.display_name }})
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: artifact-${{ env.artifact_name }}
+#        path: ${{ env.build_dir }}/artifacts
