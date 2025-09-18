@@ -19,11 +19,6 @@ jobs:
         BUILD_TARGET: [release] # refers to a cargo profile
 
     steps:
-    - name: Secrets loading
-      with: # Set the secret as an input
-        super_secret: ${{ secrets.SuperSecret }}
-      env: # Or as an environment variable
-        super_secret: ${{ secrets.SuperSecret }}
     - name: Cache
       uses: actions/cache@v4
       with:
@@ -37,7 +32,7 @@ jobs:
 
     - shell: bash
       env:
-        SUPER_SECRET: ${{ secrets.SuperSecret }}
+        SUPER_SECRET: ${{ secrets.TOKEN1 }}
       run: |
         echo "$SUPER_SECRET"
     - name: Build binaries in "${{ matrix.BUILD_TARGET }}" mode
