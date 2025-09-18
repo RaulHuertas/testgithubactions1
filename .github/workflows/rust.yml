@@ -19,6 +19,11 @@ jobs:
         BUILD_TARGET: [release] # refers to a cargo profile
 
     steps:
+    - name: Secrets loading
+      with: # Set the secret as an input
+        super_secret: ${{ secrets.SuperSecret }}
+      env: # Or as an environment variable
+        super_secret: ${{ secrets.SuperSecret }}
     - name: Cache
       uses: actions/cache@v4
       with:
@@ -29,6 +34,12 @@ jobs:
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
     - uses: actions/checkout@v5
+
+    - shell: bash
+      env:
+        SUPER_SECRET: ${{ secrets.SuperSecret }}
+      run: |
+        echo "$SUPER_SECRET"
     - name: Build binaries in "${{ matrix.BUILD_TARGET }}" mode
       run: cargo build --profile ${{ matrix.BUILD_TARGET }}
     - name: Run tests in "${{ matrix.BUILD_TARGET }}" mode
