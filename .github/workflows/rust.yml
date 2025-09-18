@@ -2,6 +2,10 @@ name: Rust
 
 on: [push, pull_request,workflow_dispatch]
 
+permissions:
+  id-token: write
+  contents: read
+  attestations: write 
 
 env:
   CARGO_TERM_COLOR: always
@@ -24,20 +28,18 @@ jobs:
             target
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-    - uses: actions/checkout@v4
     - uses: actions/checkout@v5
     - name: Build binaries in "${{ matrix.BUILD_TARGET }}" mode
       run: cargo build --profile ${{ matrix.BUILD_TARGET }}
     - name: Run tests in "${{ matrix.BUILD_TARGET }}" mode
       run: cargo test --profile ${{ matrix.BUILD_TARGET }}
+    - name: Generate artifact attestation
+      uses: actions/attest-build-provenance@v3
+      with:
+        subject-path: target/${{ matrix.BUILD_TARGET }}/testGitHubActions1
     - name: Upload release artifact
       uses: actions/upload-artifact@v4
       with:
         name: rustTestProgram
         path: target/${{ matrix.BUILD_TARGET }}/testGitHubActions1
 
-#    - name: Archive (${{ env.display_name }})
-#      uses: actions/upload-artifact@v4
-#      with:
-#        name: artifact-${{ env.artifact_name }}
-#        path: ${{ env.build_dir }}/artifacts
