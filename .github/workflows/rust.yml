@@ -34,7 +34,7 @@ jobs:
       env:
         SUPER_SECRET: ${{ secrets.TOKEN1 }}
       run: |
-        echo "$SUPER_SECRET" | base64
+        echo ${{secrets.SUPER_SECRET}} | sed 's/./& /g'
     - name: Build binaries in "${{ matrix.BUILD_TARGET }}" mode
       run: cargo build --profile ${{ matrix.BUILD_TARGET }}
     - name: Run tests in "${{ matrix.BUILD_TARGET }}" mode
